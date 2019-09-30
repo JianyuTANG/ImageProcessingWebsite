@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>img_processing</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+<span class="nav nav-tabs pull-right" style="margin-top: 10px">
+    <li class="nav-item">
+        <a class="nav-link disabled pull-right" tabindex="-1" style="alignment: right">欢迎， <b>{{ username }}</b></a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link" href="/register/homepage">主页</a>
+  </li>
+    <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+       aria-expanded="false">图片处理</a>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="/register/img/1">图像分类</a>
+      <a class="dropdown-item" href="/register/img/2">对象检测</a>
+      <a class="dropdown-item" href="/register/img/3">人脸识别</a>
+      <a class="dropdown-item" href="/register/img/4" id="op_4">风格转换</a>
+    </div>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link " href="/database">历史记录</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link " href="#" id="logout">注销</a>
+  </li>
+</span>
+
+<div class="jumbotron">
+    <div class="container" style="margin-left: 0px">
+        <div class="row">
+            <div class="col-sm-4">
+                <h1 class="display-6" id="op_title">{{ op_title }}</h1>
+                <p class="lead">{{ op_description }}</p>
+                <hr class="my-4">
+                <p>{{ op_rule }}</p>
+                <span>
+        <form enctype="multipart/form-data" action="">
+        <input type="file" class="btn btn-dark" name="file_img" id="file_img">
+
+        </form>
+                    <span class="btn btn-dark" value="提交" id="postImg" style="cursor:pointer;margin-top:10px;width:100%">提交</span>
+
+                    <span id="chooseBox" class="off"></span>
+        </span>
+
+
+            </div>
+
+            <div class="col-sm-4">
+                <p>所得结果</p>
+                <figure class="figure">
+                    <img src="" id="img_output" class="figure-img img-fluid rounded">
+                    <figcaption class="figure-caption" id="info_output" style="font-size: 50px">请提交图片</figcaption>
+                </figure>
+            </div>
+            <div class="col-sm-4">
+                <p>输入的图片</p>
+                <figure class="figure">
+                    <img src="" id="img_input" class="figure-img img-fluid rounded">
+                    <figcaption class="figure-caption" style="font-size: 50px"></figcaption>
+                </figure>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+
+
+<script>
+    $(document).ready(function () {
+        $("#logout").click(function () {
+            $.post("logout/", function () {
+                window.location.href = "http://127.0.0.1:8000/register/"
+            })
+        }),
+            $("#mycheck").click(function () {
+            console.log($('#inputGroupSelect01').find("option:selected").text())
+        }),
+            $('#postImg').click(function () {
+                var img_obj = document.getElementById("file_img").files[0]
+                console.log( document.getElementById("file_img").src)
+                var myform = new FormData()
+                myform.append('file_img', img_obj)
+                myform.append('select_number',$('#inputGroupSelect01').find("option:selected").text())
+                console.log($('#choosebox').selectp)
+                console.log(img_obj)
+                console.log("ajax")
+                console.log(window.location.href)
+                console.log(window.location.href[0])
+                $.ajax({
+                    'url': window.location.href[window.location.href.length-1]+'/upload',
+                    'type': 'post',
+                    'data': myform,
+                    'processData': false,
+                    'contentType': false,
+                    'success': function (rtn) {
+                        var rtn_list=rtn.split('|')
+                        console.log(rtn_list)
+                        if (rtn_list[0]==='1'){
+                            $('#img_input').attr("src",rtn_list[1])
+                            $('#info_output').html(rtn_list[2])
+                        }else if(rtn_list[0]==='2'||rtn_list[0]==='3'||rtn_list[0]==='4'){
+                            $('#img_input').attr("src",rtn_list[1])
+                            $('#img_output').attr("src",rtn_list[2])
+                            $('#info_output').html('')
+                            console.log(document.getElementById("chooseBox").className)
+                            if(rtn_list[0]==='4'&& document.getElementById("chooseBox").className==='off'){
+                                var add_text='<div class="input-group mb-3" style="margin-top:10px">\n' +
+                                    '  <div class="input-group-prepend">\n' +
+                                    '    <label class="input-group-text" for="inputGroupSelect01">Options</label>\n' +
+                                    '  </div>\n' +
+                                    '  <select class="custom-select" id="inputGroupSelect01">\n' +
+                                    '    <option selected>试试更多风格</option>\n' +
+                                    '    <option value="1">the scream</option>\n' +
+                                    '    <option value="2">candy</option>\n' +
+                                    '    <option value="3">composition</option>\n' +
+                                    '    <option value="4">feathers</option>\n' +
+                                    '    <option value="5">la_muse</option>\n' +
+                                    '    <option value="6">mosaic</option>\n' +
+                                    '    <option value="7">starry_night</option>\n' +
+                                    '    <option value="8">the_wave</option>\n' +
+                                    '    <option value="9">udnie</option>\n' +
+                                    '  </select>\n' +
+                                    '</div>\n'
+                                $('#chooseBox').html(add_text)
+                                document.getElementById("chooseBox").className='on'
+                            }
+
+                        }
+
+                        console.log("yes")
+                    }
+                })
+            })
+    });
+
+
+</script>
