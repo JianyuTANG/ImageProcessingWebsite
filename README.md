@@ -1,4 +1,4 @@
-# ImageProcessingWebsite
+# Image Processing Website
 A Django website (incld front and back end) using Deep Learning to process images.
 
 ##To Run the service
@@ -34,4 +34,10 @@ you need...
   ImageProcessingWebsite\myrecord\DL_service\transfer_models
   ```
 
-  
+
+
+
+### Acknowledgement
+
+Collaborated with Yingqi Wang(汪颖祺) and thanks for her hard work in our project.
+
