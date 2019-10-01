@@ -1,7 +1,7 @@
 # Image Processing Website
 A Django website (incld front and back end) using Deep Learning to process images.
 
-##To Run the service
+## To Run the service
 
 you need...
 
@@ -14,7 +14,7 @@ you need...
 - MTCNN
 - \>=TensorFlow 1.4
 
-####models for deep neural networks
+#### models for deep neural networks
 
 - download **darknet19_448.weights** from [here](  https://github.com/pjreddie/darknet) and put it in 
 
